@@ -10,7 +10,18 @@ def KSA(key):
 
     return S
 
-def PRGA(S):
-    pass
+def PRGA(S, Text):
+    i = 0; j=0
+    count = 0; 
+
+    #Setiap keystream "u" langsung di XOR dengan plaintext
+    while count != len(Text):
+        i = (i + 1) % 256
+        j = j(j + S[i]) % 256
+        S[i], S[j] = S[j], S[i]
+        t = (S[i] + S[j]) % 256
+        u = S[t] #keystream
+        c = u ^ Text[count]
+        yield c
 
 # print(KSA("aku dan kamu"))
