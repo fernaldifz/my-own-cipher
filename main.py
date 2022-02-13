@@ -17,7 +17,7 @@ def PRGA(S, Text):
     #Setiap keystream "u" langsung di XOR dengan plaintext
     while count != len(Text):
         i = (i + 1) % 256
-        j = j(j + S[i]) % 256
+        j = (j + S[i]) % 256
         S[i], S[j] = S[j], S[i]
         t = (S[i] + S[j]) % 256
         u = S[t] #keystream
