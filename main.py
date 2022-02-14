@@ -12,16 +12,16 @@ def KSA(key):
 
 def PRGA(S, Text):
     i = 0; j=0
-    count = 0; 
+    count = 0
+    result = ''
 
     #Setiap keystream "u" langsung di XOR dengan plaintext
-    while count != len(Text):
+    for count in range(len(Text)):
         i = (i + 1) % 256
         j = (j + S[i]) % 256
         S[i], S[j] = S[j], S[i]
         t = (S[i] + S[j]) % 256
         u = S[t] #keystream
-        c = u ^ Text[count]
-        yield c
-
-# print(KSA("aku dan kamu"))
+        c = u ^ ord(Text[count])
+        result += chr(c)
+    return result
