@@ -22,6 +22,11 @@ def PRGA(S, Text):
         S[i], S[j] = S[j], S[i]
         t = (S[i] + S[j]) % 256
         u = S[t] #keystream
-        c = u ^ ord(Text[count])
-        result += chr(c)
-    return result
+
+        byteText = bytearray(Text[count], "utf8")
+        binaryText = bin(byteText[0])
+
+        c = u ^ int(binaryText, 2)
+   
+
+print(PRGA(KSA("halo"), "senang sekali"))
