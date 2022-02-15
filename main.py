@@ -61,8 +61,8 @@ def binaryToDecimal(binary):
     return decimal
 
 def RC4(key, Text):
-    print("ini hasil enkripsi sebelum LFSR dan sesudah PRGA", PRGA(KSA("halo"), "senang"))
-    cipherText = PRGA(KSA("halo"), "senang")
+    print("ini hasil enkripsi sebelum LFSR dan sesudah PRGA", PRGA(KSA(key), Text))
+    cipherText = PRGA(KSA(key), Text)
 
     shiftedText = ["" for i in range(len(cipherText))]
     for i in range(len(cipherText)):
@@ -72,10 +72,13 @@ def RC4(key, Text):
     for i in range(len(cipherText)):
         shiftedCipherText[i] = chr(binaryToDecimal(shiftedText[i]))
 
-    #
-    # INI HASIL SHIFTED CIPHER TEXT -> shiftedCipherText
     print("ini hasil enkripsi setelah LFSR dan sesudah PRGA: ", shiftedCipherText)
-    #
+
+    cipherTextResult = ""
+    for i in range(len(cipherText)):
+        cipherTextResult += shiftedCipherText[i]
+    
+    print("ini hasil akhir enkripsi setelah segalanya: ", cipherTextResult)
     
     unshiftedText = ["" for i in range(len(cipherText))]
 
@@ -86,7 +89,6 @@ def RC4(key, Text):
     for i in range(len(cipherText)):
         unshiftedCipherText[i] = chr(binaryToDecimal(unshiftedText[i]))
     
-    # unshifted text sudah betul
     print("ini hasil dekripsi setelah LFSR dan sebelum PRGA: ", unshiftedCipherText)
 
     cipherText2 = ""
@@ -94,8 +96,13 @@ def RC4(key, Text):
     for i in range(len(cipherText)):
         cipherText2 += unshiftedCipherText[i]
     
-    plainText = PRGA(KSA(cipherText2), "senang")
-    print("ini hasil dekripsi setelah LFSR dan setelah PRGA: ", plainText)
+    plainTextNumber = PRGA(KSA(key), cipherText2)
+    print("ini hasil dekripsi setelah LFSR dan setelah PRGA: ", plainTextNumber)
 
+    plainTextResult = ""
+    for i in range(len(plainTextNumber)):
+        plainTextResult += chr(plainTextNumber[i])
+    
+    print("ini hasil akhir dekripsinya setelah segalanya:", plainTextResult)
 
-RC4("halo", "senang")
+RC4("halo", "bahagia")
