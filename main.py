@@ -28,7 +28,7 @@ def PRGA(S, Text):
     return result
 
 def LFSR(c, number):
-    binary = str(bin(c)[2:])
+    binary = str(bin(int(c))[2:])
     if(len(binary) < 8):
         x = ""
         for i in range(8 - len(binary)):
@@ -61,25 +61,41 @@ def binaryToDecimal(binary):
     return decimal
 
 def RC4(key, Text):
-    print(PRGA(KSA("halo"), "senang"))
+    print("ini hasil enkripsi sebelum LFSR dan sesudah PRGA", PRGA(KSA("halo"), "senang"))
     cipherText = PRGA(KSA("halo"), "senang")
 
-    shiftedCipherText = [0 for i in range(len(cipherText))]
+    shiftedText = ["" for i in range(len(cipherText))]
     for i in range(len(cipherText)):
-        print(chr(cipherText[i]))
-        shiftedBinary = LFSR(cipherText[i], 8)
-        decimal = binaryToDecimal(shiftedBinary)
-        shiftedCipherText[i] = chr(decimal)
+        shiftedText[i] = LFSR(cipherText[i], 8)
     
-    print(shiftedCipherText)
+    shiftedCipherText = ["" for i in range(len(cipherText))]
+    for i in range(len(cipherText)):
+        shiftedCipherText[i] = chr(binaryToDecimal(shiftedText[i]))
 
-    unshiftedCipherText = [0 for i in range(len(cipherText))]
-    for i in range(len(cipherText)):
-        shiftedBinary = LFSR(cipherText[i], 15)
-        decimal = binaryToDecimal(shiftedBinary)
-        unshiftedCipherText[i] = chr(decimal)
+    #
+    # INI HASIL SHIFTED CIPHER TEXT -> shiftedCipherText
+    print("ini hasil enkripsi setelah LFSR dan sesudah PRGA: ", shiftedCipherText)
+    #
     
-    print(unshiftedCipherText)
-    #print(PRGA(KSA(unshiftedCipherText), "senang"))
+    unshiftedText = ["" for i in range(len(cipherText))]
+
+    for i in range(len(cipherText)):
+        unshiftedText[i] = LFSR(binaryToDecimal(shiftedText[i]), 7)
+    
+    unshiftedCipherText = ["" for i in range(len(cipherText))]
+    for i in range(len(cipherText)):
+        unshiftedCipherText[i] = chr(binaryToDecimal(unshiftedText[i]))
+    
+    # unshifted text sudah betul
+    print("ini hasil dekripsi setelah LFSR dan sebelum PRGA: ", unshiftedCipherText)
+
+    cipherText2 = ""
+
+    for i in range(len(cipherText)):
+        cipherText2 += unshiftedCipherText[i]
+    
+    plainText = PRGA(KSA(cipherText2), "senang")
+    print("ini hasil dekripsi setelah LFSR dan setelah PRGA: ", plainText)
+
 
 RC4("halo", "senang")
