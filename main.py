@@ -109,14 +109,42 @@ def RC4(key, Text):
     
     print("ini hasil akhir dekripsinya setelah segalanya:", plainTextResult)
 
+def PRGAFiles(S, Path):
+    i = 0; j=0
+    count = 0
+
+    file = open(Path, "rb")
+    data = file.read()
+    file.close()
+
+    data = bytearray(data) 
+    print(data[:10])
+    for index, value in enumerate(data):
+        i = (i + 1) % 256
+        j = (j + S[i]) % 256
+        S[i], S[j] = S[j], S[i]
+        t = (S[i] + S[j]) % 256
+        u = S[t] #keystream
+        data[index] = u ^ value
+    
+    print(data[:10])
+    file = open("CC-" + Path, "wb")
+    file.write(data)
+    file.close()
+
 def RC4EncFile(filename, key):
     file = open(filename, "rb")
     data = file.read()
     file.close()
+    S = KSA(key)
+    test = True
     
     data = bytearray(data)
     for index, value in enumerate(data):
         data[index] = value ^ len(key)
+        while test:
+            print(type(value))
+            test = False
         
     file = open("CC-" + filename, "wb")
     file.write(data)
@@ -131,10 +159,9 @@ def RC4DecFile(filename, key):
     for index, value in enumerate(data):
         data[index] = value ^ len(key)
         
-    
     file = open(filename, "wb")
     file.write(data)
     file.close()
 
-data = RC4EncFile("file/test_image.jpg", "halo")
-# RC4("halo", "aku adalah anak gembala yang punya 4 rumah dengan kode '431#$sT4'. ")
+data = PRGAFiles(KSA("Halo"), "CC-test_image.jpg")
+# RC4("halo", "aku adalah anak gembala yang punya 4 rumah dengan kode '431#$sT4'. ")-                                                                                                                                                                                                                                                                                                                              
