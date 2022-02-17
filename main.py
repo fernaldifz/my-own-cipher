@@ -1,3 +1,7 @@
+import codecs
+import binascii
+import re
+
 def KSA(key):
     #inisiasi
     S = [i for i in range(256)]
@@ -105,4 +109,32 @@ def RC4(key, Text):
     
     print("ini hasil akhir dekripsinya setelah segalanya:", plainTextResult)
 
-RC4("halo", "bahagia")
+def RC4EncFile(filename, key):
+    file = open(filename, "rb")
+    data = file.read()
+    file.close()
+    
+    data = bytearray(data)
+    for index, value in enumerate(data):
+        data[index] = value ^ len(key)
+        
+    file = open("CC-" + filename, "wb")
+    file.write(data)
+    file.close()
+
+def RC4DecFile(filename, key):
+    file = open(filename, "rb")
+    data = file.read()
+    file.close()
+    
+    data = bytearray(data)
+    for index, value in enumerate(data):
+        data[index] = value ^ len(key)
+        
+    
+    file = open(filename, "wb")
+    file.write(data)
+    file.close()
+
+data = RC4EncFile("file/test_image.jpg", "halo")
+# RC4("halo", "aku adalah anak gembala yang punya 4 rumah dengan kode '431#$sT4'. ")
