@@ -31,7 +31,28 @@ def PRGA(S, Text):
 
     return result
 
-def LFSR(c, number):
+def LFSR(c, number = 8):
+    binary = str(bin(int(c))[2:])
+    if(len(binary) < 8):
+        x = ""
+        for i in range(8 - len(binary)):
+            x += "0"
+        binary = x + binary
+
+    firstHalf = binary[:4]
+    secondHalf = binary[4:8]
+    for i in range(number):
+        new = XOR(int(firstHalf[0]), int(firstHalf[3]))
+        firstHalf = str(new) + firstHalf[:3]
+    
+    for i in range(number):
+        new = XOR(int(secondHalf[0]), int(secondHalf[3]))
+        secondHalf = str(new) + secondHalf[:3]
+    binary = firstHalf + secondHalf
+
+    return binary
+
+def reverseLFSR(c, number = 7):
     binary = str(bin(int(c))[2:])
     if(len(binary) < 8):
         x = ""
@@ -64,50 +85,49 @@ def binaryToDecimal(binary):
         decimal += int(binary[i]) * 2**(len(binary)-i-1)
     return decimal
 
-def RC4(key, Text):
-    print("ini hasil enkripsi sebelum LFSR dan sesudah PRGA", PRGA(KSA(key), Text))
-    cipherText = PRGA(KSA(key), Text)
+def encrypt(key, text):
+    #PRGA
+    
+    cipherText = PRGA(KSA(key), text)
+
+    #LFSR
+
+    # print(cipherText)
 
     shiftedText = ["" for i in range(len(cipherText))]
     for i in range(len(cipherText)):
         shiftedText[i] = LFSR(cipherText[i], 8)
-    
+
     shiftedCipherText = ["" for i in range(len(cipherText))]
     for i in range(len(cipherText)):
         shiftedCipherText[i] = chr(binaryToDecimal(shiftedText[i]))
 
-    print("ini hasil enkripsi setelah LFSR dan sesudah PRGA: ", shiftedCipherText)
-
-    cipherTextResult = ""
+    cipherResult = ""
     for i in range(len(cipherText)):
-        cipherTextResult += shiftedCipherText[i]
+        cipherResult += shiftedCipherText[i]
     
-    print("ini hasil akhir enkripsi setelah segalanya: ", cipherTextResult)
-    
+    return cipherResult
+
+def decrypt(key, cipherText):
     unshiftedText = ["" for i in range(len(cipherText))]
+    arrayOFText = ["" for i in range(len(cipherText))]
+    unshiftedTextString = ""
 
     for i in range(len(cipherText)):
-        unshiftedText[i] = LFSR(binaryToDecimal(shiftedText[i]), 7)
+        unshiftedText[i] = reverseLFSR(ord(cipherText[i]),7)
+        arrayOFText[i] = chr(binaryToDecimal(unshiftedText[i]))
+        unshiftedTextString += arrayOFText[i]
     
-    unshiftedCipherText = ["" for i in range(len(cipherText))]
-    for i in range(len(cipherText)):
-        unshiftedCipherText[i] = chr(binaryToDecimal(unshiftedText[i]))
-    
-    print("ini hasil dekripsi setelah LFSR dan sebelum PRGA: ", unshiftedCipherText)
+    arrayOfPlaintext = PRGA(KSA(key), unshiftedTextString)
+    plaintext = ""
 
-    cipherText2 = ""
+    for char in arrayOfPlaintext:
+        plaintext += chr(char)
 
-    for i in range(len(cipherText)):
-        cipherText2 += unshiftedCipherText[i]
-    
-    plainTextNumber = PRGA(KSA(key), cipherText2)
-    print("ini hasil dekripsi setelah LFSR dan setelah PRGA: ", plainTextNumber)
+    return plaintext
 
-    plainTextResult = ""
-    for i in range(len(plainTextNumber)):
-        plainTextResult += chr(plainTextNumber[i])
-    
-    print("ini hasil akhir dekripsinya setelah segalanya:", plainTextResult)
+def RC4Files(key, Binary):
+    cipherText = PRGA(KSA(key), Binary)
 
 def PRGAFiles(S, Path):
     i = 0; j=0
@@ -118,7 +138,7 @@ def PRGAFiles(S, Path):
     file.close()
 
     data = bytearray(data) 
-    print(data[:10])
+    # print(data[:10])
     for index, value in enumerate(data):
         i = (i + 1) % 256
         j = (j + S[i]) % 256
@@ -127,10 +147,12 @@ def PRGAFiles(S, Path):
         u = S[t] #keystream
         data[index] = u ^ value
     
-    print(data[:10])
-    file = open("CC-" + Path, "wb")
-    file.write(data)
-    file.close()
+    # print(data[:10])
+    # print(len(data))
+    # file = open("CC-" + Path, "wb")
+    # file.write(data)
+    # file.close()
+    return data
 
 def RC4EncFile(filename, key):
     file = open(filename, "rb")
@@ -163,5 +185,8 @@ def RC4DecFile(filename, key):
     file.write(data)
     file.close()
 
-data = PRGAFiles(KSA("Halo"), "CC-test_image.jpg")
-# RC4("halo", "aku adalah anak gembala yang punya 4 rumah dengan kode '431#$sT4'. ")-                                                                                                                                                                                                                                                                                                                              
+a = encrypt("halo", "aku adalah anak gembala yang punya 4 rumah dengan kode '431#$sT4'. ")
+print(a)
+b = decrypt("halo", encrypt("halo", "aku adalah anak gembala yang punya 4 rumah dengan kode '431#$sT4'. "))
+print(b)
+                                                                                                                                                                                                                                                                                                                          
