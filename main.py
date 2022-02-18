@@ -126,8 +126,45 @@ def decrypt(key, cipherText):
 
     return plaintext
 
-def RC4Files(key, Binary):
-    cipherText = PRGA(KSA(key), Binary)
+def encryptFiles(key, Path):
+    data = PRGAFiles(KSA(key), Path) #value 
+    print(data[:10])
+
+    # shiftedText = ["" for i in range(len(data))]
+    # shiftedCipherText = ["" for i in range(len(data))]
+    for index, value in enumerate(data):
+        data[index] = binaryToDecimal(LFSR(value))
+    
+    print(data[:10])
+    return data
+
+def decryptFiles(key, Path):
+    i = 0; j = 0
+    file = open(Path, "rb")
+    data = file.read()
+    file.close()
+
+    data = bytearray(data)
+
+    print(data[:10])
+
+    unshiftedText = ["" for i in range(len(data))]
+    for index, value in enumerate(data):
+        unshiftedText[index] = reverseLFSR(value)
+        data[index] = binaryToDecimal(unshiftedText[index])
+    
+    print(data[:10])
+    
+    S = KSA(key)
+    for index, value in enumerate(data):
+        i = (i + 1) % 256
+        j = (j + S[i]) % 256
+        S[i], S[j] = S[j], S[i]
+        t = (S[i] + S[j]) % 256
+        u = S[t] #keystream
+        data[index] = u ^ value
+
+    return data
 
 def PRGAFiles(S, Path):
     i = 0; j=0
@@ -185,8 +222,19 @@ def RC4DecFile(filename, key):
     file.write(data)
     file.close()
 
-a = encrypt("halo", "aku adalah anak gembala yang punya 4 rumah dengan kode '431#$sT4'. ")
-print(a)
-b = decrypt("halo", encrypt("halo", "aku adalah anak gembala yang punya 4 rumah dengan kode '431#$sT4'. "))
-print(b)
+# a = encrypt("halo", "aku adalah anak gembala yang punya 4 rumah dengan kode '431#$sT4'. ")
+# b = decrypt("halo", encrypt("halo", "aku adalah anak gembala yang punya 4 rumah dengan kode '431#$sT4'. "))
+
+# print(encryptFiles("Halo", "test_image.jpg")[:10])
+# data = encryptFiles("Halo", "test_image.jpg")
+# file = open("CC-" + "test_image.jpg", "wb")
+# file.write(data)
+# file.close()
+# # print(data[:10])
+# data = decryptFiles("Halo", "CC-test_image.jpg")
+# file = open("CC-" + "test_image.jpg", "wb")
+# file.write(data)
+# file.close()
+# print(data[:10])
+
                                                                                                                                                                                                                                                                                                                           
