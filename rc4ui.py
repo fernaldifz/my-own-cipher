@@ -1,7 +1,7 @@
 from pydoc import plain
 import time
 import sys
-import rc4
+import RC4Modified
 from os import curdir, environ
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets, QtGui
@@ -21,7 +21,7 @@ class RC4Encryption(QDialog):
         self.file.setText("")
         plaintext = self.plaintext.toPlainText()
         key = self.key.toPlainText()
-        cipher = rc4.encrypt(key, plaintext)
+        cipher = RC4Modified.encrypt(key, plaintext)
         self.ciphertext.setText(cipher)
 
     def gotoRC4Decrypt(self):
@@ -32,17 +32,9 @@ class RC4Encryption(QDialog):
     def saveCipher(self):
         if len(self.ciphertext.toPlainText()) != 0:
             option=QFileDialog.Options()
-            #first param is qwidget
-            #second param is Window Title
-            #third title is Default File Name
-            #fourth param is FileType
-            #fifth is options
-
-            #for override native save dialog
             option|=QFileDialog.DontUseNativeDialog
 
             file=QFileDialog.getSaveFileName(widget,"Save File Window Title","default.txt","All Files (*)",options=option)
-            # print(file[0]) #path
             file = open(file[0], "w",encoding="utf-8")
             file.write(self.ciphertext.toPlainText())
             file.close()
@@ -53,7 +45,7 @@ class RC4Encryption(QDialog):
             option=QFileDialog.Options()
             file=QFileDialog.getOpenFileName(widget,"Open Single File","Default File","All Files(*)",options=option)
             path = file[0]
-            data = rc4.encryptFiles(self.key.toPlainText(), path)
+            data = RC4Modified.encryptFiles(self.key.toPlainText(), path)
             file=QFileDialog.getSaveFileName(widget,"Save File Window Title","default.txt","All Files (*)",options=option)
             file = open(file[0], "wb")
             file.write(data)
@@ -81,7 +73,7 @@ class RC4Decryption(QDialog):
         self.file.setText("")
         ciphertext = self.ciphertext.toPlainText()
         key = self.key.toPlainText()
-        plaintext = rc4.decrypt(key, ciphertext)
+        plaintext = RC4Modified.decrypt(key, ciphertext)
         self.plaintext.setText(plaintext)
 
     def openFileToDecrypt(self):
@@ -90,7 +82,7 @@ class RC4Decryption(QDialog):
             option=QFileDialog.Options()
             file=QFileDialog.getOpenFileName(widget,"Open Single File","Default File","All Files(*)",options=option)
             path = file[0]
-            data = rc4.decryptFiles(self.key.toPlainText(), path)
+            data = RC4Modified.decryptFiles(self.key.toPlainText(), path)
             file=QFileDialog.getSaveFileName(widget,"Save File Window Title","default.txt","All Files (*)",options=option)
             file = open(file[0], "wb")
             file.write(data)
@@ -120,4 +112,3 @@ widget = QtWidgets.QStackedWidget()
 widget.addWidget(menu)
 widget.setFixedHeight(512)
 widget.setFixedWidth(720)
-run()

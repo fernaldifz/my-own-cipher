@@ -86,13 +86,7 @@ def binaryToDecimal(binary):
     return decimal
 
 def encrypt(key, text):
-    #PRGA
-    
     cipherText = PRGA(KSA(key), text)
-
-    #LFSR
-
-    # print(cipherText)
 
     shiftedText = ["" for i in range(len(cipherText))]
     for i in range(len(cipherText)):
@@ -127,15 +121,10 @@ def decrypt(key, cipherText):
     return plaintext
 
 def encryptFiles(key, Path):
-    data = PRGAFiles(KSA(key), Path) #value 
-    # print(data[:10])
-
-    # shiftedText = ["" for i in range(len(data))]
-    # shiftedCipherText = ["" for i in range(len(data))]
+    data = PRGAFiles(KSA(key), Path) 
     for index, value in enumerate(data):
         data[index] = binaryToDecimal(LFSR(value))
     
-    # print(data[:10])
     return data
 
 def decryptFiles(key, Path):
@@ -146,14 +135,10 @@ def decryptFiles(key, Path):
 
     data = bytearray(data)
 
-    # print(data[:10])
-
     unshiftedText = ["" for i in range(len(data))]
     for index, value in enumerate(data):
         unshiftedText[index] = reverseLFSR(value)
         data[index] = binaryToDecimal(unshiftedText[index])
-    
-    # print(data[:10])
     
     S = KSA(key)
     for index, value in enumerate(data):
@@ -175,7 +160,6 @@ def PRGAFiles(S, Path):
     file.close()
 
     data = bytearray(data) 
-    # print(data[:10])
     for index, value in enumerate(data):
         i = (i + 1) % 256
         j = (j + S[i]) % 256
@@ -184,26 +168,7 @@ def PRGAFiles(S, Path):
         u = S[t] #keystream
         data[index] = u ^ value
     
-    # print(data[:10])
-    # print(len(data))
-    # file = open("CC-" + Path, "wb")
-    # file.write(data)
-    # file.close()
+
     return data
-
-# a = encrypt("halo", "aku adalah anak gembala yang punya 4 rumah dengan kode '431#$sT4'. ")
-# b = decrypt("halo", encrypt("halo", "aku adalah anak gembala yang punya 4 rumah dengan kode '431#$sT4'. "))
-
-# print(encryptFiles("Halo", "test_image.jpg")[:10])
-# data = encryptFiles("Halo", "test_image.jpg")
-# file = open("CC-" + "test_image.jpg", "wb")
-# file.write(data)
-# file.close()
-# # print(data[:10])
-# data = decryptFiles("Halo", "CC-test_image.jpg")
-# file = open("CC-" + "test_image.jpg", "wb")
-# file.write(data)
-# file.close()
-# print(data[:10])
 
                                                                                                                                                                                                                                                                                                                           
