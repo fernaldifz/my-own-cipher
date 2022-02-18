@@ -41,7 +41,7 @@ class RC4Encryption(QDialog):
             #for override native save dialog
             option|=QFileDialog.DontUseNativeDialog
 
-            file=QFileDialog.getSaveFileName(widget,"Save File Window Title","defualt.txt","All Files (*)",options=option)
+            file=QFileDialog.getSaveFileName(widget,"Save File Window Title","default.txt","All Files (*)",options=option)
             # print(file[0]) #path
             file = open(file[0], "w",encoding="utf-8")
             file.write(self.ciphertext.toPlainText())
@@ -54,7 +54,7 @@ class RC4Encryption(QDialog):
             file=QFileDialog.getOpenFileName(widget,"Open Single File","Default File","All Files(*)",options=option)
             path = file[0]
             data = rc4.encryptFiles(self.key.toPlainText(), path)
-            file=QFileDialog.getSaveFileName(widget,"Save File Window Title","defualt.txt","All Files (*)",options=option)
+            file=QFileDialog.getSaveFileName(widget,"Save File Window Title","default.txt","All Files (*)",options=option)
             file = open(file[0], "wb")
             file.write(data)
             file.close()
@@ -91,7 +91,7 @@ class RC4Decryption(QDialog):
             file=QFileDialog.getOpenFileName(widget,"Open Single File","Default File","All Files(*)",options=option)
             path = file[0]
             data = rc4.decryptFiles(self.key.toPlainText(), path)
-            file=QFileDialog.getSaveFileName(widget,"Save File Window Title","defualt.txt","All Files (*)",options=option)
+            file=QFileDialog.getSaveFileName(widget,"Save File Window Title","default.txt","All Files (*)",options=option)
             file = open(file[0], "wb")
             file.write(data)
             file.close()
