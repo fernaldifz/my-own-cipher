@@ -1,0 +1,1 @@
+ini adalah enkripsi pertama kamu menggunakan RC4
