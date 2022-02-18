@@ -9,7 +9,7 @@ def KSA(key):
     #permutasi
     j = 0
     for i in range(0,256):
-        j = (j + S[i] + ord(key[i % len(key)])) % 256 
+        j = (j + S[i] + ord(key[i % len(key)]) + ord(key[i*j % len(key)])) % 256 
         S[i], S[j] = S[j], S[i]
 
     return S
