@@ -128,14 +128,14 @@ def decrypt(key, cipherText):
 
 def encryptFiles(key, Path):
     data = PRGAFiles(KSA(key), Path) #value 
-    print(data[:10])
+    # print(data[:10])
 
     # shiftedText = ["" for i in range(len(data))]
     # shiftedCipherText = ["" for i in range(len(data))]
     for index, value in enumerate(data):
         data[index] = binaryToDecimal(LFSR(value))
     
-    print(data[:10])
+    # print(data[:10])
     return data
 
 def decryptFiles(key, Path):
@@ -146,14 +146,14 @@ def decryptFiles(key, Path):
 
     data = bytearray(data)
 
-    print(data[:10])
+    # print(data[:10])
 
     unshiftedText = ["" for i in range(len(data))]
     for index, value in enumerate(data):
         unshiftedText[index] = reverseLFSR(value)
         data[index] = binaryToDecimal(unshiftedText[index])
     
-    print(data[:10])
+    # print(data[:10])
     
     S = KSA(key)
     for index, value in enumerate(data):
@@ -190,37 +190,6 @@ def PRGAFiles(S, Path):
     # file.write(data)
     # file.close()
     return data
-
-def RC4EncFile(filename, key):
-    file = open(filename, "rb")
-    data = file.read()
-    file.close()
-    S = KSA(key)
-    test = True
-    
-    data = bytearray(data)
-    for index, value in enumerate(data):
-        data[index] = value ^ len(key)
-        while test:
-            print(type(value))
-            test = False
-        
-    file = open("CC-" + filename, "wb")
-    file.write(data)
-    file.close()
-
-def RC4DecFile(filename, key):
-    file = open(filename, "rb")
-    data = file.read()
-    file.close()
-    
-    data = bytearray(data)
-    for index, value in enumerate(data):
-        data[index] = value ^ len(key)
-        
-    file = open(filename, "wb")
-    file.write(data)
-    file.close()
 
 # a = encrypt("halo", "aku adalah anak gembala yang punya 4 rumah dengan kode '431#$sT4'. ")
 # b = decrypt("halo", encrypt("halo", "aku adalah anak gembala yang punya 4 rumah dengan kode '431#$sT4'. "))
